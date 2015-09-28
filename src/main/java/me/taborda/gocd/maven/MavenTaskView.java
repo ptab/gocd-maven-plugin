@@ -1,13 +1,11 @@
 package me.taborda.gocd.maven;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 import com.thoughtworks.go.plugin.api.task.TaskView;
 
-/**
- *
- * @author ruckc
- */
 public class MavenTaskView implements TaskView {
 
     @Override
@@ -17,8 +15,8 @@ public class MavenTaskView implements TaskView {
 
     @Override
     public String template() {
-        try {
-            return IOUtils.toString(getClass().getResourceAsStream("/views/maventask.template.html"));
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/views/maventask.template.html")))) {
+            return reader.lines().reduce("", (acc, s) -> acc + s);
         } catch (IOException e) {
             return "Failed to find template: " + e.getMessage();
         }

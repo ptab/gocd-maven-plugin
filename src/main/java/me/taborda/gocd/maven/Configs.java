@@ -5,10 +5,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.thoughtworks.go.plugin.api.task.TaskConfig;
 
-public enum MavenCommand {
+public enum Configs {
 
     GOALS("Goals", (str) -> Collections.singletonList(str.replaceAll("\\s+", " "))),
     PROFILES("Profiles", (str) -> Collections.singletonList("-P" + str.replaceAll("\\s+", ","))),
@@ -17,7 +18,7 @@ public enum MavenCommand {
     private final String property;
     private final Function<String, List<String>> commandParser;
 
-    MavenCommand(String property, Function<String, List<String>> commandParser) {
+    Configs(String property, Function<String, List<String>> commandParser) {
         this.property = property;
         this.commandParser = commandParser;
     }
@@ -26,8 +27,8 @@ public enum MavenCommand {
         return property;
     }
 
-    public static List<MavenCommand> all() {
-        return Arrays.asList(values());
+    public static Stream<Configs> all() {
+        return Arrays.asList(values()).stream();
     }
 
     public List<String> getCommands(TaskConfig tc) {

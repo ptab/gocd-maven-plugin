@@ -17,8 +17,8 @@ public class MavenTask implements Task {
     @Override
     public TaskConfig config() {
         TaskConfig config = new TaskConfig();
-        MavenCommand.all().forEach(c -> config.addProperty(c.getProperty()));
-        MavenFlag.all().forEach(f -> config.addProperty(f.getProperty()).withDefault(Boolean.toString(f.isActiveByDefault())));
+        Configs.all().forEach(c -> config.addProperty(c.getProperty()));
+        Flags.all().forEach(f -> config.addProperty(f.getProperty()).withDefault(Boolean.toString(f.isActiveByDefault())));
         return config;
     }
 
@@ -35,13 +35,13 @@ public class MavenTask implements Task {
     @Override
     public ValidationResult validate(TaskConfig tc) {
         StringBuilder builder = new StringBuilder();
-        MavenFlag.all().forEach(f -> builder.append(f.getFlag(tc)).append(" "));
-        MavenCommand.all().forEach(c -> c.getCommands(tc).forEach(s -> builder.append(s).append(" ")));
-        LOGGER.info("Will run command: mvn " + builder.toString());
+        Flags.active(tc).forEach(f -> builder.append(f.getFlag(tc)).append(" "));
+        Configs.all().forEach(c -> c.getCommands(tc).forEach(s -> builder.append(s).append(" ")));
+        LOGGER.info("Saved configuration: mvn " + builder.toString());
 
         ValidationResult result = new ValidationResult();
-        if (!MavenCommand.GOALS.isActive(tc)) {
-            result.addError(new ValidationError(MavenCommand.GOALS.getProperty(), "Maven goals are required"));
+        if (!Configs.GOALS.isActive(tc)) {
+            result.addError(new ValidationError(Configs.GOALS.getProperty(), "Maven goals are required"));
         }
         return result;
     }

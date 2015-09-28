@@ -2,12 +2,11 @@ package me.taborda.gocd.maven;
 
 
 import java.util.Arrays;
-import java.util.List;
+import java.util.stream.Stream;
 
 import com.thoughtworks.go.plugin.api.task.TaskConfig;
 
-public enum MavenFlag {
-
+public enum Flags {
     BATCH("Batch", "-B", true),
     UPDATE("Update", "-U", false),
     QUIET("Quiet", "-q", false),
@@ -18,7 +17,7 @@ public enum MavenFlag {
     private final String flag;
     private final boolean activeByDefault;
 
-    MavenFlag(String property, String flag, boolean activeByDefault) {
+    Flags(String property, String flag, boolean activeByDefault) {
         this.property = property;
         this.flag = flag;
         this.activeByDefault = activeByDefault;
@@ -32,10 +31,6 @@ public enum MavenFlag {
         return activeByDefault;
     }
 
-    public static List<MavenFlag> all() {
-        return Arrays.asList(values());
-    }
-
     public String getFlag(TaskConfig tc) {
         return isActive(tc) ? flag : "";
     }
@@ -43,4 +38,13 @@ public enum MavenFlag {
     private boolean isActive(TaskConfig tc) {
         return "true".equalsIgnoreCase(tc.getValue(property));
     }
+
+    public static Stream<Flags> all() {
+        return Arrays.asList(values()).stream();
+    }
+
+    public static Stream<Flags> active(TaskConfig tc) {
+        return all().filter(f -> f.isActive(tc));
+    }
+
 }

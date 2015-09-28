@@ -57,9 +57,9 @@ public class MavenTaskExecutor implements TaskExecutor {
             command.add("mvn");
         }
 
-        MavenFlag.all().forEach(f -> command.add(f.getFlag(tc)));
-        MavenCommand.all().forEach(c -> command.addAll(c.getCommands(tc)));
-        LOGGER.info("Building command: " + command);
+        Flags.active(tc).forEach(f -> command.add(f.getFlag(tc)));
+        Configs.all().forEach(c -> command.addAll(c.getCommands(tc)));
+        LOGGER.info("Will execute command: " + command);
 
         ProcessBuilder builder = new ProcessBuilder(command);
         builder.environment().putAll(tec.environment().asMap());
