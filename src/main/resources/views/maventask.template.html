@@ -1,31 +1,49 @@
 <div class="form_item_block">
-    <label for="arguments">Arguments:<span class="asterisk">*</span></label>
-    <input id="arguments" name="arguments" type="text" ng-model="Arguments" ng-required="true"/>
+    <label for="goals">Goals:<span class="asterisk">*</span></label>
+    <textarea id="goals" name="goals" ng-model="Goals" ng-required="true" rows="1"></textarea>
+    <span class="form_error" ng-show="GOINPUTNAME[goals].$error.server">{{ GOINPUTNAME[goals].$error.server }}</span>
 </div>
 <div class="form_item_block">
     <label for="profiles">Profiles:</label>
-    <input id="profiles" name="profiles" type="text" ng-model="Profiles" ng-required="false"/>
+    <textarea id="profiles" name="profiles" ng-model="Profiles" ng-required="false" rows="1" wrap="off" style="resize: vertical"></textarea>
+    <div class="contextual_help has_go_tip_right" title="One per line (no need to use -P)"></div>
 </div>
+<div class="form_item_block">
+    <label for="properties">Properties:</label>
+    <textarea id="properties" name="properties" ng-model="Properties" ng-required="false" rows="1" wrap="off" style="resize: vertical"></textarea>
+    <div class="contextual_help has_go_tip_right" title="One per line (no need to use -D)"></div>
+</div>
+
 <div class="form_item_block">
     <label>Flags:</label>
     <div class="checkbox_row">
-        <input id="offline2" type="checkbox" ng-model="Offline2" ng-init="Offline2 = Offline" ng-change="Offline = Offline2" ng-true-value="true" ng-false-value="false">
-        <input id="offline" type="hidden" ng-model="Offline" value="{{Offline}}">
-        <label for="offline">Adds -o enable offline mode</label>
+        <!-- hack to make checkboxes work in Go Angular templates -->
+        <input id="batchHack" type="checkbox" ng-model="BatchHack" ng-init="BatchHack = Batch" ng-change="Batch = BatchHack" ng-true-value="true" ng-false-value="false" />
+        <input id="batch" type="hidden" ng-model="Batch" value="{{ Batch }}" />
+        <label for="batch">Batch (non-interactive) mode (-B)</label>
     </div>
     <div class="checkbox_row">
-        <input id="quiet2" type="checkbox" ng-model="Quiet2" ng-init="Quiet2 = Quiet" ng-change="Quiet = Quiet2" ng-true-value="true" ng-false-value="false">
-        <input id="quiet" type="hidden" ng-model="Quiet" value="{{Quiet}}">
-        <label for="offline">Adds -q enable quiet mode</label>
+        <!-- hack to make checkboxes work in Go Angular templates -->
+        <input id="updateHack" type="checkbox" ng-model="UpdateHack" ng-init="UpdateHack = Update" ng-change="Update = UpdateHack" ng-true-value="true" ng-false-value="false" />
+        <input id="update" type="hidden" ng-model="Update" value="{{ Update }}" />
+        <label for="update">Force update of dependencies (-U)</label>
     </div>
     <div class="checkbox_row">
-        <input id="debug2" type="checkbox" ng-model="Debug2" ng-init="Debug2 = Debug" ng-change="Debug = Debug2" ng-true-value="true" ng-false-value="false">
-        <input id="debug" type="hidden" ng-model="Debug" value="{{Debug}}">
-        <label for="debug">Adds -X enable debug mode</label>
+        <!-- hack to make checkboxes work in Go Angular templates -->
+        <input id="debugHack" type="checkbox" ng-model="DebugHack" ng-init="DebugHack = Debug" ng-change="Debug = DebugHack" ng-true-value="true" ng-false-value="false" />
+        <input id="debug" type="hidden" ng-model="Debug" value="{{ Debug }}" />
+        <label for="debug">Debug mode (-X)</label>
     </div>
     <div class="checkbox_row">
-        <input id="batch2" type="checkbox" ng-model="Batch2" ng-init="Batch2 = Batch" ng-change="Batch = Batch2" ng-true-value="true" ng-false-value="false" checked="checked">
-        <input id="batch" type="hidden" ng-model="Batch" value="{{Batch}}">
-        <label for="batch">Adds -B to enable batch (non-interactive) mode</label>
+        <!-- hack to make checkboxes work in Go Angular templates -->
+        <input id="quietHack" type="checkbox" ng-model="QuietHack" ng-init="QuietHack = Quiet" ng-change="Quiet = QuietHack" ng-true-value="true" ng-false-value="false" />
+        <input id="quiet" type="hidden" ng-model="Quiet" value="{{ Quiet }}" />
+        <label for="quiet">Quiet mode (-q)</label>
+    </div>
+    <div class="checkbox_row">
+        <!-- hack to make checkboxes work in Go Angular templates -->
+        <input id="offlineHack" type="checkbox" ng-model="OfflineHack" ng-init="OfflineHack = Offline" ng-change="Offline = OfflineHack" ng-true-value="true" ng-false-value="false" />
+        <input id="offline" type="hidden" ng-model="Offline" value="{{ Offline }}" />
+        <label for="offline">Offline mode (-o)</label>
     </div>
 </div>

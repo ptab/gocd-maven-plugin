@@ -1,6 +1,7 @@
-package io.ruck.maven.gocd.plugin;
+package me.taborda.gocd.maven.plugin;
 
 import com.thoughtworks.go.plugin.api.annotation.Extension;
+import com.thoughtworks.go.plugin.api.logging.Logger;
 import com.thoughtworks.go.plugin.api.response.validation.ValidationError;
 import com.thoughtworks.go.plugin.api.response.validation.ValidationResult;
 import com.thoughtworks.go.plugin.api.task.Task;
@@ -8,29 +9,16 @@ import com.thoughtworks.go.plugin.api.task.TaskConfig;
 import com.thoughtworks.go.plugin.api.task.TaskExecutor;
 import com.thoughtworks.go.plugin.api.task.TaskView;
 
-/**
- *
- * @author ruckc
- */
 @Extension
 public class MavenTask implements Task {
 
-    public static final String ARGUMENTS_KEY = "Arguments";
-    public static final String PROFILES_KEY = "Profiles";
-    public static final String OFFLINE_KEY = "Offline";
-    public static final String QUIET_KEY = "Quiet";
-    public static final String DEBUG_KEY = "Debug";
-    public static final String BATCH_KEY = "Batch";
+    private static final Logger LOGGER = Logger.getLoggerFor(MavenTask.class);
 
     @Override
     public TaskConfig config() {
         TaskConfig config = new TaskConfig();
-        config.addProperty(ARGUMENTS_KEY);
-        config.addProperty(PROFILES_KEY);
-        config.addProperty(OFFLINE_KEY);
-        config.addProperty(QUIET_KEY);
-        config.addProperty(DEBUG_KEY);
-        config.addProperty(BATCH_KEY).withDefault("true");
+        MavenCommand.all().forEach(c -> config.addProperty(c.getProperty()));
+        MavenFlag.all().forEach(f -> config.addProperty(f.getProperty()).withDefault(Boolean.toString(f.isActiveByDefault())));
         return config;
     }
 
@@ -46,11 +34,15 @@ public class MavenTask implements Task {
 
     @Override
     public ValidationResult validate(TaskConfig tc) {
+        StringBuilder builder = new StringBuilder();
+        MavenFlag.all().forEach(f -> builder.append(f.getFlag(tc)).append(" "));
+        MavenCommand.all().forEach(c -> c.getCommands(tc).forEach(s -> builder.append(s).append(" ")));
+        LOGGER.info("Will run command: mvn " + builder.toString());
+
         ValidationResult result = new ValidationResult();
-        if (StringUtils.isBlank(tc.getValue(ARGUMENTS_KEY))) {
-            result.addError(new ValidationError(ARGUMENTS_KEY, "Arguments arer equired"));
+        if (!MavenCommand.GOALS.isActive(tc)) {
+            result.addError(new ValidationError(MavenCommand.GOALS.getProperty(), "Maven goals are required"));
         }
         return result;
     }
-
 }

@@ -1,4 +1,11 @@
-package io.ruck.maven.gocd.plugin;
+package me.taborda.gocd.maven.plugin;
+
+import java.io.File;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import com.thoughtworks.go.plugin.api.logging.Logger;
 import com.thoughtworks.go.plugin.api.response.execution.ExecutionResult;
@@ -6,32 +13,19 @@ import com.thoughtworks.go.plugin.api.task.Console;
 import com.thoughtworks.go.plugin.api.task.TaskConfig;
 import com.thoughtworks.go.plugin.api.task.TaskExecutionContext;
 import com.thoughtworks.go.plugin.api.task.TaskExecutor;
-import java.io.File;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 
-/**
- *
- * @author ruckc
- */
 public class MavenTaskExecutor implements TaskExecutor {
 
-    private static final String TRUE = "true";
     private static final Logger LOGGER = Logger.getLoggerFor(MavenTaskExecutor.class);
 
     @Override
     public ExecutionResult execute(TaskConfig tc, TaskExecutionContext tec) {
         Console console = tec.console();
-        
+
         ProcessBuilder mvn = createMavenCommand(tc, tec);
 
         try {
             Process process = mvn.start();
-
             console.readErrorOf(process.getErrorStream());
             console.readOutputOf(process.getInputStream());
 
@@ -53,39 +47,24 @@ public class MavenTaskExecutor implements TaskExecutor {
     }
 
     private ProcessBuilder createMavenCommand(TaskConfig tc, TaskExecutionContext tec) {
-        List<String> command = new ArrayList<String>();
-        Map<String, String> env = tec.environment().asMap();
+        List<String> command = new ArrayList<>();
 
+        Map<String, String> env = tec.environment().asMap();
         if (env.containsKey("M2_HOME")) {
-            command.add(new File(env.get("M2_HOME"), "mvn").getPath());
+            String m2Home = env.get("M2_HOME") + "/bin";
+            command.add(new File(m2Home, "mvn").getPath());
         } else {
             command.add("mvn");
         }
 
-        if (StringUtils.equals(tc.getValue(MavenTask.DEBUG_KEY), TRUE)) {
-            command.add("-X");
-        }
-        if (StringUtils.equals(tc.getValue(MavenTask.QUIET_KEY), TRUE)) {
-            command.add("-q");
-        }
-        if (StringUtils.equals(tc.getValue(MavenTask.OFFLINE_KEY), TRUE)) {
-            command.add("-o");
-        }
-        if (StringUtils.equals(tc.getValue(MavenTask.BATCH_KEY), TRUE)) {
-            command.add("-B");
-        }
-        if (!StringUtils.isBlank(tc.getValue(MavenTask.PROFILES_KEY))) {
-            command.add("-p");
-            command.add(tc.getValue(MavenTask.PROFILES_KEY));
-        }
-
-        command.addAll(Arrays.asList(tc.getValue(MavenTask.ARGUMENTS_KEY).split("\\s+")));
-
-        LOGGER.debug("Building command: " + command);
+        MavenFlag.all().forEach(f -> command.add(f.getFlag(tc)));
+        MavenCommand.all().forEach(c -> command.addAll(c.getCommands(tc)));
+        LOGGER.info("Building command: " + command);
 
         ProcessBuilder builder = new ProcessBuilder(command);
         builder.environment().putAll(tec.environment().asMap());
         builder.directory(new File(tec.workingDir()));
         return builder;
     }
+
 }

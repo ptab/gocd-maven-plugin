@@ -1,9 +1,11 @@
-package io.ruck.maven.gocd.plugin;
+package me.taborda.gocd.maven.plugin;
+
+import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayInputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
-import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 
 /**

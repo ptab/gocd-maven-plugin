@@ -1,7 +1,8 @@
-package io.ruck.maven.gocd.plugin;
+package me.taborda.gocd.maven.plugin;
+
+import java.io.IOException;
 
 import com.thoughtworks.go.plugin.api.task.TaskView;
-import java.io.IOException;
 
 /**
  *
@@ -18,8 +19,8 @@ public class MavenTaskView implements TaskView {
     public String template() {
         try {
             return IOUtils.toString(getClass().getResourceAsStream("/views/maventask.template.html"));
-        } catch (IOException ex) {
-            return "Failed to find template: " + ex.getMessage();
+        } catch (IOException e) {
+            return "Failed to find template: " + e.getMessage();
         }
     }
 
