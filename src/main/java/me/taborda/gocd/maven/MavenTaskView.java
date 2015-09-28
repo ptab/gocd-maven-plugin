@@ -1,4 +1,4 @@
-package me.taborda.gocd.maven.plugin;
+package me.taborda.gocd.maven;
 
 import java.io.IOException;
 

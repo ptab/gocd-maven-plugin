@@ -1,4 +1,4 @@
-package me.taborda.gocd.maven.plugin;
+package me.taborda.gocd.maven;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,7 +23,7 @@ public class IOUtils {
         copy(isr, sw, bufsize);
         return sw.toString();
     }
-    
+
     static void copy(Reader r, Writer w, int bufsize) throws IOException {
         char[] buf = new char[bufsize];
         int read;

@@ -1,4 +1,4 @@
-package me.taborda.gocd.maven.plugin;
+package me.taborda.gocd.maven;
 
 import com.thoughtworks.go.plugin.api.annotation.Extension;
 import com.thoughtworks.go.plugin.api.logging.Logger;
