@@ -4,10 +4,10 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>me.taborda</groupId>
     <artifactId>gocd-maven-plugin</artifactId>
-    <version>0.1.2</version>
+    <version>0.9</version>
     <packaging>jar</packaging>
-    <name>gocd-maven-task-plugin</name>
-    <description>Maven task plugin for GoCD</description>
+    <name>Maven Task Plugin</name>
+    <description>Maven Task plugin for go.cd</description>
     <url>https://github.com/ptab/gocd-maven-plugin</url>
 
     <licenses>
